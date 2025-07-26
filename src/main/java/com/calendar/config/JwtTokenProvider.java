@@ -4,6 +4,8 @@ import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.spec.SecretKeySpec;
+import java.security.Key;
 import java.util.Date;
 
 @Component
@@ -11,16 +13,18 @@ public class JwtTokenProvider {
     
     private String jwtSecret = "mySecretKey";
     private int jwtExpirationInMs = 604800000; // 7 days
-    
+
     public String createToken(Long userId, String email) {
         Date expiryDate = new Date(System.currentTimeMillis() + jwtExpirationInMs);
-        
+
+        Key key = new SecretKeySpec(jwtSecret.getBytes(), SignatureAlgorithm.HS512.getJcaName());
+
         return Jwts.builder()
                 .setSubject(userId.toString())
                 .claim("email", email)
                 .setIssuedAt(new Date())
                 .setExpiration(expiryDate)
-                .signWith(SignatureAlgorithm.HS512, jwtSecret)
+                .signWith(SignatureAlgorithm.HS512, key)
                 .compact();
     }
     

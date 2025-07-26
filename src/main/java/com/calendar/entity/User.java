@@ -26,7 +26,7 @@ public class User {
     @Column(name = "last_name")
     private String lastName;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at",columnDefinition = "DATETIME(6)")
     private LocalDateTime createdAt;
 
     // Existing relationships
@@ -57,11 +57,11 @@ public class User {
 
     // Constructors
     public User() {
-        this.createdAt = LocalDateTime.now();
+
     }
 
     public User(String email, String password, String firstName, String lastName) {
-        this();
+        this.createdAt = LocalDateTime.now();
         this.email = email;
         this.password = password;
         this.firstName = firstName;
