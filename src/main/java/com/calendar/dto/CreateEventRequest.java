@@ -1,8 +1,9 @@
 package com.calendar.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
-// DTO Classes for Event
+// DTO Classes for Event (Updated)
 public class CreateEventRequest {
     private String title;
     private String description;
@@ -10,6 +11,7 @@ public class CreateEventRequest {
     private LocalDateTime endTime;
     private String location;
     private Long calendarId;
+    private List<String> inviteEmails; // Optional: invite users while creating event
 
     // Getters and setters
     public String getTitle() {
@@ -58,5 +60,13 @@ public class CreateEventRequest {
 
     public void setCalendarId(Long calendarId) {
         this.calendarId = calendarId;
+    }
+
+    public List<String> getInviteEmails() {
+        return inviteEmails;
+    }
+
+    public void setInviteEmails(List<String> inviteEmails) {
+        this.inviteEmails = inviteEmails;
     }
 }

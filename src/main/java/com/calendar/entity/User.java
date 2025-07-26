@@ -1,10 +1,12 @@
 package com.calendar.entity;
+
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+// Updated User Entity with missing relationships
 @Entity
 @Table(name = "users")
 public class User {
@@ -27,8 +29,31 @@ public class User {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    // Existing relationships
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private List<Calendar> calendars = new ArrayList<>();
+
+    // NEW: Missing relationships
+    @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL)
+    private List<Event> createdEvents = new ArrayList<>();
+
+    @OneToMany(mappedBy = "sharedWith", cascade = CascadeType.ALL)
+    private List<CalendarShare> sharedCalendars = new ArrayList<>();
+
+    @OneToMany(mappedBy = "sharedWith", cascade = CascadeType.ALL)
+    private List<EventShare> sharedEvents = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<EventAttendee> eventAttendances = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<EventReminder> eventReminders = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<EventComment> eventComments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "uploadedBy", cascade = CascadeType.ALL)
+    private List<EventAttachment> uploadedAttachments = new ArrayList<>();
 
     // Constructors
     public User() {
@@ -43,25 +68,132 @@ public class User {
         this.lastName = lastName;
     }
 
-    // Getters and Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    // Getters and Setters (existing ones)
+    public Long getId() {
+        return id;
+    }
 
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
+    public String getEmail() {
+        return email;
+    }
 
-    public String getFirstName() { return firstName; }
-    public void setFirstName(String firstName) { this.firstName = firstName; }
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-    public String getLastName() { return lastName; }
-    public void setLastName(String lastName) { this.lastName = lastName; }
+    public String getPassword() {
+        return password;
+    }
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-    public List<Calendar> getCalendars() { return calendars; }
-    public void setCalendars(List<Calendar> calendars) { this.calendars = calendars; }
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public List<Calendar> getCalendars() {
+        return calendars;
+    }
+
+    public void setCalendars(List<Calendar> calendars) {
+        this.calendars = calendars;
+    }
+
+    // NEW: Getters and setters for missing relationships
+    public List<Event> getCreatedEvents() {
+        return createdEvents;
+    }
+
+    public void setCreatedEvents(List<Event> createdEvents) {
+        this.createdEvents = createdEvents;
+    }
+
+    public List<CalendarShare> getSharedCalendars() {
+        return sharedCalendars;
+    }
+
+    public void setSharedCalendars(List<CalendarShare> sharedCalendars) {
+        this.sharedCalendars = sharedCalendars;
+    }
+
+    public List<EventShare> getSharedEvents() {
+        return sharedEvents;
+    }
+
+    public void setSharedEvents(List<EventShare> sharedEvents) {
+        this.sharedEvents = sharedEvents;
+    }
+
+    public List<EventAttendee> getEventAttendances() {
+        return eventAttendances;
+    }
+
+    public void setEventAttendances(List<EventAttendee> eventAttendances) {
+        this.eventAttendances = eventAttendances;
+    }
+
+    public List<EventReminder> getEventReminders() {
+        return eventReminders;
+    }
+
+    public void setEventReminders(List<EventReminder> eventReminders) {
+        this.eventReminders = eventReminders;
+    }
+
+    public List<EventComment> getEventComments() {
+        return eventComments;
+    }
+
+    public void setEventComments(List<EventComment> eventComments) {
+        this.eventComments = eventComments;
+    }
+
+    public List<EventAttachment> getUploadedAttachments() {
+        return uploadedAttachments;
+    }
+
+    public void setUploadedAttachments(List<EventAttachment> uploadedAttachments) {
+        this.uploadedAttachments = uploadedAttachments;
+    }
+
+    // Helper methods
+    public String getFullName() {
+        return firstName + " " + lastName;
+    }
+
+    public void addCalendar(Calendar calendar) {
+        calendars.add(calendar);
+        calendar.setOwner(this);
+    }
+
+    public void removeCalendar(Calendar calendar) {
+        calendars.remove(calendar);
+        calendar.setOwner(null);
+    }
 }
