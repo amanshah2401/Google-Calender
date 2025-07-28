@@ -1,5 +1,6 @@
 package com.calendar.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -11,7 +12,7 @@ public class EventRecurrence {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @JsonBackReference
     @OneToOne
     @JoinColumn(name = "event_id", nullable = false)
     private Event event;

@@ -1,5 +1,6 @@
 package com.calendar.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -13,10 +14,12 @@ public class CalendarShare {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "calendar_id", nullable = false)
     private Calendar calendar;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "shared_with_id", nullable = false)
     private User sharedWith;

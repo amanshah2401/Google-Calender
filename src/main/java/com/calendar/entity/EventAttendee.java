@@ -1,5 +1,6 @@
 package com.calendar.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -10,11 +11,11 @@ public class EventAttendee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "event_id", nullable = false)
     private Event event;
-
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user; // Can be null for external attendees

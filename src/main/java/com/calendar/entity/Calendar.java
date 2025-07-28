@@ -1,5 +1,9 @@
 package com.calendar.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -20,6 +24,7 @@ public class Calendar {
 
     private String color;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
@@ -27,9 +32,11 @@ public class Calendar {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "calendar", cascade = CascadeType.ALL)
     private List<Event> events = new ArrayList<>();
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "calendar", cascade = CascadeType.ALL)
     private List<CalendarShare> shares = new ArrayList<>();
 

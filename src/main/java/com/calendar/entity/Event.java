@@ -1,12 +1,13 @@
 package com.calendar.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-// Updated Event Entity with missing relationships
 @Entity
 @Table(name = "events")
 public class Event {
@@ -27,10 +28,12 @@ public class Event {
 
     private String location;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "calendar_id", nullable = false)
     private Calendar calendar;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "created_by", nullable = false)
     private User createdBy;
@@ -38,22 +41,26 @@ public class Event {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    // NEW: Missing relationships
+    @JsonManagedReference
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EventShare> eventShares = new ArrayList<>();
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EventAttendee> attendees = new ArrayList<>();
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EventReminder> reminders = new ArrayList<>();
 
     @OneToOne(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     private EventRecurrence recurrence;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EventComment> comments = new ArrayList<>();
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EventAttachment> attachments = new ArrayList<>();
 

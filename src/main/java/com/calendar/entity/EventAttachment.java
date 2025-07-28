@@ -1,9 +1,9 @@
 package com.calendar.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-// Missing Entity 6: EventAttachment
 @Entity
 @Table(name = "event_attachments")
 public class EventAttachment {
@@ -12,9 +12,10 @@ public class EventAttachment {
     private Long id;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "event_id", nullable = false)
     private Event event;
-
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "uploaded_by", nullable = false)
     private User uploadedBy;
@@ -26,7 +27,7 @@ public class EventAttachment {
     private String filePath;
 
     @Column(name = "file_size")
-    private Long fileSize; // in bytes
+    private Long fileSize;
 
     @Column(name = "content_type")
     private String contentType;

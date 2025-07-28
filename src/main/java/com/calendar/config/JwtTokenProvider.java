@@ -10,14 +10,14 @@ import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
-    
-    private String jwtSecret = "mySecretKey";
+
+    private  String jwtSecret = "mySecretKey";
     private int jwtExpirationInMs = 604800000; // 7 days
+
+    private final Key key = new SecretKeySpec(jwtSecret.getBytes(), SignatureAlgorithm.HS512.getJcaName());
 
     public String createToken(Long userId, String email) {
         Date expiryDate = new Date(System.currentTimeMillis() + jwtExpirationInMs);
-
-        Key key = new SecretKeySpec(jwtSecret.getBytes(), SignatureAlgorithm.HS512.getJcaName());
 
         return Jwts.builder()
                 .setSubject(userId.toString())
@@ -27,28 +27,28 @@ public class JwtTokenProvider {
                 .signWith(SignatureAlgorithm.HS512, key)
                 .compact();
     }
-    
+
     public Long getUserIdFromToken(String token) {
         Claims claims = Jwts.parser()
-                .setSigningKey(jwtSecret)
+                .setSigningKey(key)
                 .parseClaimsJws(token)
                 .getBody();
-        
+
         return Long.parseLong(claims.getSubject());
     }
-    
+
     public String getEmailFromToken(String token) {
         Claims claims = Jwts.parser()
-                .setSigningKey(jwtSecret)
+                .setSigningKey(key)
                 .parseClaimsJws(token)
                 .getBody();
-        
+
         return claims.get("email", String.class);
     }
-    
+
     public boolean validateToken(String authToken) {
         try {
-            Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
+            Jwts.parser().setSigningKey(key).parseClaimsJws(authToken);
             return true;
         } catch (SignatureException ex) {
             System.err.println("Invalid JWT signature");
@@ -63,7 +63,7 @@ public class JwtTokenProvider {
         }
         return false;
     }
-    
+
     public String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {

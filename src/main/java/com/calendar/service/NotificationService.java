@@ -5,11 +5,8 @@ import com.calendar.entity.EventAttendee;
 import com.calendar.entity.EventReminder;
 import org.springframework.stereotype.Service;
 
-// 5. NotificationService (for reminders and invitations)
 @Service
 public class NotificationService {
-
-    // This would typically integrate with email service, push notification service, etc.
 
     public void sendEventReminder(EventReminder reminder) {
         switch (reminder.getType()) {

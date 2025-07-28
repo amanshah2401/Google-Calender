@@ -1,12 +1,12 @@
 package com.calendar.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-// Updated User Entity with missing relationships
 @Entity
 @Table(name = "users")
 public class User {
@@ -29,33 +29,38 @@ public class User {
     @Column(name = "created_at",columnDefinition = "DATETIME(6)")
     private LocalDateTime createdAt;
 
-    // Existing relationships
+    @JsonManagedReference
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private List<Calendar> calendars = new ArrayList<>();
 
-    // NEW: Missing relationships
+    @JsonManagedReference
     @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL)
     private List<Event> createdEvents = new ArrayList<>();
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "sharedWith", cascade = CascadeType.ALL)
     private List<CalendarShare> sharedCalendars = new ArrayList<>();
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "sharedWith", cascade = CascadeType.ALL)
     private List<EventShare> sharedEvents = new ArrayList<>();
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<EventAttendee> eventAttendances = new ArrayList<>();
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<EventReminder> eventReminders = new ArrayList<>();
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<EventComment> eventComments = new ArrayList<>();
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "uploadedBy", cascade = CascadeType.ALL)
     private List<EventAttachment> uploadedAttachments = new ArrayList<>();
 
-    // Constructors
     public User() {
 
     }
