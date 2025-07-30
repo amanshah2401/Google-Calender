@@ -23,8 +23,8 @@ public class EventAttachment {
     @Column(name = "file_name", nullable = false)
     private String fileName;
 
-    @Column(name = "file_path", nullable = false)
-    private String filePath;
+    @Column(name = "file_id", nullable = false)
+    private String fileId; // MongoDB ObjectId as string
 
     @Column(name = "file_size")
     private Long fileSize;
@@ -40,12 +40,12 @@ public class EventAttachment {
         this.uploadedAt = LocalDateTime.now();
     }
 
-    public EventAttachment(Event event, User uploadedBy, String fileName, String filePath, String contentType, Long fileSize) {
+    public EventAttachment(Event event, User uploadedBy, String fileName, String fileId, String contentType, Long fileSize) {
         this();
         this.event = event;
         this.uploadedBy = uploadedBy;
         this.fileName = fileName;
-        this.filePath = filePath;
+        this.fileId = fileId;
         this.contentType = contentType;
         this.fileSize = fileSize;
     }
@@ -83,12 +83,12 @@ public class EventAttachment {
         this.fileName = fileName;
     }
 
-    public String getFilePath() {
-        return filePath;
+    public String getFileId() {
+        return fileId;
     }
 
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
+    public void setFileId(String fileId) {
+        this.fileId = fileId;
     }
 
     public Long getFileSize() {

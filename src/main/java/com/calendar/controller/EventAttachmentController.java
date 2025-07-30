@@ -70,6 +70,26 @@ public class EventAttachmentController {
                 .body(fileData);
     }
 
+    @GetMapping("/{attachmentId}/preview")
+    public ResponseEntity<byte[]> previewAttachment(@PathVariable Long eventId,
+                                                    @PathVariable Long attachmentId,
+                                                    HttpServletRequest request) {
+        Long userId = getUserIdFromRequest(request);
+
+        EventAttachment attachment = eventAttachmentService.getAttachment(attachmentId, userId);
+        byte[] fileData = eventAttachmentService.downloadAttachment(attachmentId, userId);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType(attachment.getContentType()));
+        // For preview, don't set attachment disposition
+        headers.setContentDisposition(ContentDisposition.builder("inline")
+                .filename(attachment.getFileName()).build());
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(fileData);
+    }
+
     @DeleteMapping("/{attachmentId}")
     public ResponseEntity<String> deleteAttachment(@PathVariable Long eventId,
                                                    @PathVariable Long attachmentId,
@@ -85,6 +105,33 @@ public class EventAttachmentController {
         Long userId = getUserIdFromRequest(request);
         Long usage = eventAttachmentService.getEventStorageUsage(eventId, userId);
         return ResponseEntity.ok(usage);
+    }
+
+    @GetMapping("/{attachmentId}/metadata")
+    public ResponseEntity<EventAttachment> getAttachmentMetadata(@PathVariable Long eventId,
+                                                                @PathVariable Long attachmentId,
+                                                                HttpServletRequest request) {
+        Long userId = getUserIdFromRequest(request);
+        EventAttachment attachment = eventAttachmentService.getAttachmentMetadata(attachmentId, userId);
+        return ResponseEntity.ok(attachment);
+    }
+
+    @GetMapping("/{attachmentId}/exists")
+    public ResponseEntity<Boolean> checkFileExists(@PathVariable Long eventId,
+                                                   @PathVariable Long attachmentId,
+                                                   HttpServletRequest request) {
+        Long userId = getUserIdFromRequest(request);
+        boolean exists = eventAttachmentService.fileExists(attachmentId, userId);
+        return ResponseEntity.ok(exists);
+    }
+
+    @GetMapping("/{attachmentId}/size")
+    public ResponseEntity<Long> getFileSize(@PathVariable Long eventId,
+                                             @PathVariable Long attachmentId,
+                                             HttpServletRequest request) {
+        Long userId = getUserIdFromRequest(request);
+        Long size = eventAttachmentService.getFileSize(attachmentId, userId);
+        return ResponseEntity.ok(size);
     }
 
     private Long getUserIdFromRequest(HttpServletRequest request) {

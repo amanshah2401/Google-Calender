@@ -25,16 +25,19 @@ public class EventAttachmentService {
     @Autowired
     private UserService userService;
 
-    // This would typically integrate with a file storage service (AWS S3, local storage, etc.)
+    @Autowired
+    private FileStorageService fileStorageService;
+
+    // Upload attachment using MongoDB GridFS
     public EventAttachment uploadAttachment(Long eventId, Long userId, String fileName,
                                             String contentType, Long fileSize, byte[] fileData) {
         Event event = eventService.getEventById(eventId, userId);
         User user = userService.findById(userId);
 
-        // Save file to storage (implementation depends on storage solution)
-        String filePath = saveFileToStorage(fileName, fileData);
+        // Store file in MongoDB GridFS
+        String fileId = fileStorageService.storeFile(fileName, contentType, fileData);
 
-        EventAttachment attachment = new EventAttachment(event, user, fileName, filePath, contentType, fileSize);
+        EventAttachment attachment = new EventAttachment(event, user, fileName, fileId, contentType, fileSize);
         return eventAttachmentRepository.save(attachment);
     }
 
@@ -51,8 +54,8 @@ public class EventAttachmentService {
             throw new AccessDeniedException("No permission to delete this attachment");
         }
 
-        // Delete file from storage
-        deleteFileFromStorage(attachment.getFilePath());
+        // Delete file from MongoDB GridFS
+        fileStorageService.deleteFile(attachment.getFileId());
 
         eventAttachmentRepository.delete(attachment);
     }
@@ -76,8 +79,8 @@ public class EventAttachmentService {
     public byte[] downloadAttachment(Long attachmentId, Long userId) {
         EventAttachment attachment = getAttachment(attachmentId, userId);
 
-        // Load file from storage
-        return loadFileFromStorage(attachment.getFilePath());
+        // Load file from MongoDB GridFS
+        return fileStorageService.retrieveFile(attachment.getFileId());
     }
 
     public Long getUserStorageUsage(Long userId) {
@@ -93,23 +96,43 @@ public class EventAttachmentService {
         return usage != null ? usage : 0L;
     }
 
-    // Placeholder methods for file storage operations
-    private String saveFileToStorage(String fileName, byte[] fileData) {
-        // Implementation depends on storage solution
-        // Could save to local filesystem, AWS S3, Google Cloud Storage, etc.
-        String filePath = "/uploads/" + System.currentTimeMillis() + "_" + fileName;
-        // ... save file logic ...
-        return filePath;
+    /**
+     * Get file metadata without downloading the actual file
+     */
+    public EventAttachment getAttachmentMetadata(Long attachmentId, Long userId) {
+        EventAttachment attachment = getAttachment(attachmentId, userId);
+        
+        // Verify file exists in MongoDB
+        if (!fileStorageService.fileExists(attachment.getFileId())) {
+            throw new RuntimeException("File not found in storage: " + attachment.getFileId());
+        }
+        
+        return attachment;
     }
 
-    private void deleteFileFromStorage(String filePath) {
-        // Implementation depends on storage solution
-        // ... delete file logic ...
+    /**
+     * Check if file exists in storage
+     */
+    public boolean fileExists(Long attachmentId, Long userId) {
+        try {
+            EventAttachment attachment = getAttachment(attachmentId, userId);
+            return fileStorageService.fileExists(attachment.getFileId());
+        } catch (Exception e) {
+            return false;
+        }
     }
 
-    private byte[] loadFileFromStorage(String filePath) {
-        // Implementation depends on storage solution
-        // ... load file logic ...
-        return new byte[0]; // placeholder
+    /**
+     * Get file size from MongoDB
+     */
+    public Long getFileSize(Long attachmentId, Long userId) {
+        EventAttachment attachment = getAttachment(attachmentId, userId);
+        
+        // Get file metadata from MongoDB
+        var gridFSFile = fileStorageService.getFileMetadata(attachment.getFileId());
+        return gridFSFile != null ? gridFSFile.getLength() : 0L;
     }
+
+    // File storage operations are now handled by FileStorageService
+    // which uses MongoDB GridFS for efficient file storage
 }

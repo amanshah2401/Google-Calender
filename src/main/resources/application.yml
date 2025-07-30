@@ -17,6 +17,16 @@ spring:
         dialect: org.hibernate.dialect.MySQL8Dialect
         format_sql: true
 
+  # MongoDB configuration for file storage
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: calendar_files
+      # For local development, no authentication needed
+      # username: 
+      # password: 
+
   jackson:
     time-zone: UTC
     date-format: yyyy-MM-dd'T'HH:mm:ss
