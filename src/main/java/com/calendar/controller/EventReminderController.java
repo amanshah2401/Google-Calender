@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-// 1. EventReminderController
 @RestController
 @RequestMapping("/api/events/{eventId}/reminders")
 @CrossOrigin(origins = "*")

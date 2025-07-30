@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-// 3. EventCommentController
 @RestController
 @RequestMapping("/api/events/{eventId}/comments")
 @CrossOrigin(origins = "*")

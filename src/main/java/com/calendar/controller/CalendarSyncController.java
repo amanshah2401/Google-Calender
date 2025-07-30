@@ -12,7 +12,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-// 5. CalendarSyncController
 @RestController
 @RequestMapping("/api/calendars/sync")
 @CrossOrigin(origins = "*")

@@ -15,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
-// 4. EventAttachmentController
 @RestController
 @RequestMapping("/api/events/{eventId}/attachments")
 @CrossOrigin(origins = "*")

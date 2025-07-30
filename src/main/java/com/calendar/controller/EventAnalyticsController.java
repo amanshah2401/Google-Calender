@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-// 6. EventAnalyticsController
 @RestController
 @RequestMapping("/api/analytics")
 @CrossOrigin(origins = "*")

@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 
-// 2. EventRecurrenceController
 @RestController
 @RequestMapping("/api/events/{eventId}/recurrence")
 @CrossOrigin(origins = "*")
